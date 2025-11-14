@@ -3,12 +3,7 @@
 /**
  * PHP Version 7.2
  *
- * @category Router
- * @package  SimplePHPOOPMvc
- * @author   Orlando J Betancourth <orlando.betancourth@gmail.com>
- * @license  MIT http://
- * @version  CVS:1.0.0
- * @link     http://
+ * Front Controller
  */
 
 use Utilities\Context;
@@ -18,27 +13,41 @@ require __DIR__ . '/vendor/autoload.php';
 session_start();
 
 try {
+
     Site::configure();
+
+
     $pageRequest = Site::getPageRequest();
+
+
+    if (!class_exists($pageRequest)) {
+        throw new \Exception("Página no encontrada o clase inválida: {$pageRequest}", 404);
+    }
+
+
     $instance = new $pageRequest();
     $instance->run();
-    die();
+    exit;
 } catch (\Controllers\PrivateNoAuthException $ex) {
+
     $instance = new \Controllers\NoAuth();
     $instance->run();
-    die();
+    exit;
 } catch (\Controllers\PrivateNoLoggedException $ex) {
+
     $redirTo = urlencode(Context::getContextByKey("request_uri"));
     Site::redirectTo("index.php?page=sec.login&redirto=" . $redirTo);
-    die();
-} catch (Exception $ex) {
+    exit;
+} catch (\Exception $ex) {
+
+    Site::logError($ex, ($ex->getCode() >= 400 && $ex->getCode() < 600) ? $ex->getCode() : 500);
+    $instance = new \Controllers\Error();
+    $instance->run();
+    exit;
+} catch (\Error $ex) {
+    // Errores fatales/engine
     Site::logError($ex, 500);
     $instance = new \Controllers\Error();
     $instance->run();
-    die();
-} catch (Error $ex) {
-    Site::logError($ex, 500);
-    $instance = new \Controllers\Error();
-    $instance->run();
-    die();
+    exit;
 }

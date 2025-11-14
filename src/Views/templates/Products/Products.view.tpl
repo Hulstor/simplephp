@@ -1,124 +1,63 @@
-<h1>Trabajar con Productos</h1>
+<section class="container-m row px-4 py-4">
+  <h1>Productos</h1>
 
-<section class="grid">
-  <div class="row">
-    <form class="col-12 col-m-8" action="index.php" method="get">
-      <div class="flex align-center">
-        <div class="col-8 row">
-          <input type="hidden" name="page" value="Products_Products">
-          <label class="col-3" for="partialName">Nombre</label>
-          <input class="col-9" type="text" name="partialName" id="partialName" value="{{partialName}}" />
+  <form method="GET" action="index.php" class="row my-3">
+    <input type="hidden" name="page" value="Products_Products" />
+    <div class="col-12 col-m-4">
+      <label for="fltName">Nombre</label>
+      <input id="fltName" name="fltName" value="{{fltName}}" placeholder="Buscar por nombre" />
+    </div>
+    <div class="col-12 col-m-4">
+      <label for="fltStatus">Estado</label>
+      <select id="fltStatus" name="fltStatus">
+        <option value="">-- Todos --</option>
+        <option value="ACT" {{fltStatus_act}}>Activo</option>
+        <option value="INA" {{fltStatus_ina}}>Inactivo</option>
+      </select>
+    </div>
+    <div class="col-12 col-m-4 flex-end">
+      <button class="primary" type="submit">Filtrar</button>&nbsp;
+      <a class="button" href="index.php?page=Products_Products">Limpiar</a>&nbsp;
+      <a class="button" href="index.php?page=Products_Product&mode=INS">+ Nuevo</a>
+    </div>
+  </form>
 
-          <label class="col-3" for="status">Estado</label>
-          <select class="col-9" name="status" id="status">
-            <option value="EMP" {{status_EMP}}>Todos</option>
-            <option value="ACT" {{status_ACT}}>Activo</option>
-            <option value="INA" {{status_INA}}>Inactivo</option>
-          </select>
-        </div>
-        <div class="col-4 align-end">
-          <button type="submit">Filtrar</button>
-        </div>
-      </div>
-    </form>
+  <div class="row my-2">
+    <span class="col-12">Ordenar por:
+      <a href="{{ordNameUrl}}">Nombre</a> |
+      <a href="{{ordPriceUrl}}">Precio</a>
+    </span>
   </div>
-</section>
 
-<section class="WWList">
-  <table>
+  <table class="col-12">
     <thead>
       <tr>
-        <!-- ID -->
-        <th>
-          {{ifnot OrderByProductId}}
-          <a href="index.php?page=Products_Products&orderBy=productId&orderDescending=0">
-            Id <i class="fas fa-sort"></i>
-          </a>
-          {{endifnot OrderByProductId}}
-
-          {{if OrderProductId}}
-          <a href="index.php?page=Products_Products&orderBy=productId&orderDescending=1">
-            Id <i class="fas fa-sort-up"></i>
-          </a>
-          {{endif OrderProductId}}
-
-          {{if OrderProductIdDesc}}
-          <a href="index.php?page=Products_Products&orderBy=clear&orderDescending=0">
-            Id <i class="fas fa-sort-down"></i>
-          </a>
-          {{endif OrderProductIdDesc}}
-        </th>
-
-        <!-- Nombre -->
-        <th class="left">
-          {{ifnot OrderByProductName}}
-          <a href="index.php?page=Products_Products&orderBy=productName&orderDescending=0">
-            Nombre <i class="fas fa-sort"></i>
-          </a>
-          {{endifnot OrderByProductName}}
-
-          {{if OrderProductName}}
-          <a href="index.php?page=Products_Products&orderBy=productName&orderDescending=1">
-            Nombre <i class="fas fa-sort-up"></i>
-          </a>
-          {{endif OrderProductName}}
-
-          {{if OrderProductNameDesc}}
-          <a href="index.php?page=Products_Products&orderBy=clear&orderDescending=0">
-            Nombre <i class="fas fa-sort-down"></i>
-          </a>
-          {{endif OrderProductNameDesc}}
-        </th>
-
-        <!-- Precio -->
-        <th>
-          {{ifnot OrderByProductPrice}}
-          <a href="index.php?page=Products_Products&orderBy=productPrice&orderDescending=0">
-            Precio <i class="fas fa-sort"></i>
-          </a>
-          {{endifnot OrderByProductPrice}}
-
-          {{if OrderProductPrice}}
-          <a href="index.php?page=Products_Products&orderBy=productPrice&orderDescending=1">
-            Precio <i class="fas fa-sort-up"></i>
-          </a>
-          {{endif OrderProductPrice}}
-
-          {{if OrderProductPriceDesc}}
-          <a href="index.php?page=Products_Products&orderBy=clear&orderDescending=0">
-            Precio <i class="fas fa-sort-down"></i>
-          </a>
-          {{endif OrderProductPriceDesc}}
-        </th>
-
-        <th>Estado</th>
-        <th>
-          <a href="index.php?page=Products-Product&mode=INS">Nuevo</a>
-        </th>
+        <th>Id</th><th>Nombre</th><th>Precio</th><th>Estado</th><th>Acciones</th>
       </tr>
     </thead>
-
     <tbody>
       {{foreach products}}
       <tr>
         <td>{{productId}}</td>
+        <td>{{productName}}</td>
+        <td>{{productPrice}}</td>
+        <td>{{productStatus}}</td>
         <td>
-          <a class="link"
-             href="index.php?page=Products-Product&mode=DSP&id={{productId}}">
-            {{productDescription}}
-          </a>
-        </td>
-        <td class="right">{{productPrice}}</td>
-        <td class="center">{{productStatusDsc}}</td>
-        <td class="center">
-          <a href="index.php?page=Products-Product&mode=UPD&id={{productId}}">Editar</a>
-          &nbsp;
-          <a href="index.php?page=Products-Product&mode=DEL&id={{productId}}">Eliminar</a>
+          <a href="index.php?page=Products_Product&mode=DSP&productId={{productId}}">Detalles</a> |
+          <a href="index.php?page=Products_Product&mode=UPD&productId={{productId}}">Editar</a> |
+          <a class="btn-del" href="index.php?page=Products_Product&mode=DEL&productId={{productId}}">Eliminar</a>
         </td>
       </tr>
       {{endfor products}}
     </tbody>
   </table>
-
-  {{pagination}}
 </section>
+
+<script>
+  document.addEventListener("click",(e)=>{
+    const a = e.target.closest("a.btn-del");
+    if(a && !confirm("¿Deseás eliminar este producto?")){
+      e.preventDefault(); e.stopPropagation();
+    }
+  });
+</script>
